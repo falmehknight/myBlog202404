@@ -13,4 +13,13 @@ public interface LoginService {
      * @return java.lang.String
      **/
     String login(LoginDTO loginDTO);
+
+    /**
+     *
+     * @Author TanYingHao
+     * @Description 发送邮箱验证码
+     * @Date 23:27 2024/5/3
+     * @Param [username]
+     **/
+    void sendCode(String username);
 }

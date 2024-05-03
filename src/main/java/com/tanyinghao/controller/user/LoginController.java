@@ -71,6 +71,7 @@ public class LoginController {
     @ApiOperation(value = "发送邮箱验证码")
     @GetMapping("/code")
     public Result<?> sendCode(String username) {
+        loginService.sendCode(username);
         return Result.success();
     }
 
