@@ -33,7 +33,7 @@ public class MailDTO {
     private String content;
 
     @ApiModelProperty(value = "内容信息")
-    private Map<String, Object> contentMao;
+    private Map<String, Object> contentMap;
 
     @ApiModelProperty(value = "邮箱模板")
     private String template;
