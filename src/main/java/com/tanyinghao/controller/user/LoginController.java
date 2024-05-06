@@ -85,6 +85,7 @@ public class LoginController {
     @ApiOperation(value = "用户邮箱注册")
     @PostMapping("/register")
     public Result<?> register(@Validated @RequestBody RegisterDTO registerDTO) {
+        loginService.register(registerDTO);
         return Result.success();
     }
 

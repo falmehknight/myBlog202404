@@ -1,6 +1,7 @@
 package com.tanyinghao.service;
 
 import com.tanyinghao.model.dto.LoginDTO;
+import com.tanyinghao.model.dto.RegisterDTO;
 
 public interface LoginService {
 
@@ -22,4 +23,14 @@ public interface LoginService {
      * @Param [username]
      **/
     void sendCode(String username);
+
+    /**
+     *
+     * @Author TanYingHao
+     * @Description 邮箱注册
+     * @Date 22:51 2024/5/6
+     * @Param [register]
+     * @return void
+     **/
+    void register(RegisterDTO register);
 }
