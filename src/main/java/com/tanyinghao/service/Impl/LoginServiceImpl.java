@@ -5,10 +5,12 @@ import cn.hutool.captcha.generator.RandomGenerator;
 import cn.hutool.core.lang.Assert;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
+import com.tanyinghao.comm.enums.LoginTypeEnum;
 import com.tanyinghao.comm.utils.CommUtils;
 import com.tanyinghao.comm.utils.SecurityUtils;
 import com.tanyinghao.mapper.UserMapper;
 import com.tanyinghao.mapper.UserRoleMapper;
+import com.tanyinghao.model.dto.CodeDTO;
 import com.tanyinghao.model.dto.LoginDTO;
 import com.tanyinghao.model.dto.MailDTO;
 import com.tanyinghao.model.dto.RegisterDTO;
@@ -17,9 +19,11 @@ import com.tanyinghao.model.entity.User;
 import com.tanyinghao.model.entity.UserRole;
 import com.tanyinghao.service.LoginService;
 import com.tanyinghao.service.RedisService;
+import com.tanyinghao.strategy.context.SocialLoginStrategyContext;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.concurrent.TimeUnit;
 
@@ -53,6 +57,9 @@ public class LoginServiceImpl implements LoginService {
     @Autowired
     private UserRoleMapper userRoleMapper;
 
+    @Autowired
+    private SocialLoginStrategyContext socialLoginStrategyContext;
+
     @Override
     public String login(LoginDTO loginDTO) {
         User user = userMapper.selectOne(new LambdaQueryWrapper<User>()
@@ -84,6 +91,7 @@ public class LoginServiceImpl implements LoginService {
         redisService.setObject(CODE_KEY + username, code, CODE_EXPIRE_TIME, TimeUnit.MINUTES);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void register(RegisterDTO register) {
         // 1. 校验验证码是否存在
@@ -111,6 +119,22 @@ public class LoginServiceImpl implements LoginService {
                 .roleId(USER.getRoleId())
                 .build();
         userRoleMapper.insert(userRole);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public String giteeLogin(CodeDTO data) {
+        return socialLoginStrategyContext.executeLoginStrategy(data, LoginTypeEnum.GITEE);
+    }
+
+    @Override
+    public String githubLogin(CodeDTO data) {
+        return null;
+    }
+
+    @Override
+    public String qqLogin(CodeDTO data) {
+        return null;
     }
 
     /**

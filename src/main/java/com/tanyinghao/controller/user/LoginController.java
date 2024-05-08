@@ -99,7 +99,7 @@ public class LoginController {
     @ApiOperation(value = "Gitee登录")
     @PostMapping("/oauth/gitee")
     public Result<String> giteeLogin(@Validated @RequestBody CodeDTO codeDTO) {
-        return Result.success();
+        return Result.success(loginService.giteeLogin(codeDTO));
     }
 
     /**
@@ -112,7 +112,7 @@ public class LoginController {
     @ApiOperation(value = "Github登录")
     @PostMapping("/oauth/github")
     public Result<String> githubLogin(@Validated @RequestBody CodeDTO codeDTO) {
-        return Result.success();
+        return Result.success(loginService.githubLogin(codeDTO));
     }
 
     /**
@@ -125,6 +125,6 @@ public class LoginController {
     @ApiOperation(value = "QQ登录")
     @PostMapping("/oauth/qq")
     public Result<String> qqLogin(@Validated @RequestBody CodeDTO codeDTO) {
-        return Result.success();
+        return Result.success(loginService.qqLogin(codeDTO));
     }
 }
