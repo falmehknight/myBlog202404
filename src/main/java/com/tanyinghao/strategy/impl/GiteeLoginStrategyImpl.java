@@ -15,6 +15,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 
+import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -35,7 +36,7 @@ public class GiteeLoginStrategyImpl extends AbstractLoginStrategyImpl{
     @Autowired
     private GiteeProperties giteeProperties;
 
-    @Autowired
+    @Resource
     private RestTemplate restTemplate;
 
     @Override
@@ -75,7 +76,7 @@ public class GiteeLoginStrategyImpl extends AbstractLoginStrategyImpl{
         giteeData.add(CLIENT_ID, giteeProperties.getClientId());
         giteeData.add(CLIENT_SECRET, giteeProperties.getClientSecret());
         giteeData.add(GRANT_TYPE, giteeProperties.getGrantType());
-        giteeData.add(REDIRECT_URI, giteeProperties.getGrantType());
+        giteeData.add(REDIRECT_URI, giteeProperties.getRedirectUrl());
         giteeData.add(CODE, code);
         HttpEntity<LinkedMultiValueMap<String, String>> httpEntity = new HttpEntity<>(giteeData, null);
         try {

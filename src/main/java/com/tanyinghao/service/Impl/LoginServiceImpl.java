@@ -127,14 +127,16 @@ public class LoginServiceImpl implements LoginService {
         return socialLoginStrategyContext.executeLoginStrategy(data, LoginTypeEnum.GITEE);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public String githubLogin(CodeDTO data) {
-        return null;
+        return socialLoginStrategyContext.executeLoginStrategy(data, LoginTypeEnum.GITHUB);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public String qqLogin(CodeDTO data) {
-        return null;
+        return socialLoginStrategyContext.executeLoginStrategy(data, LoginTypeEnum.QQ);
     }
 
     /**
@@ -143,7 +145,6 @@ public class LoginServiceImpl implements LoginService {
      * @Description 校验验证码
      * @Date 22:59 2024/5/6
      * @Param [username, code]
-     * @return void
      **/
     private void verifyCode(String username, String code) {
         String storeCode = redisService.getObject(CODE_KEY + username);
