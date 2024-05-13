@@ -5,6 +5,8 @@ import cn.dev33.satoken.stp.StpUtil;
 import com.alibaba.fastjson2.JSON;
 import com.tanyinghao.comm.annotation.OptLogger;
 import com.tanyinghao.comm.utils.IpUtils;
+import com.tanyinghao.manager.AsyncManager;
+import com.tanyinghao.manager.factory.AsyncFactory;
 import com.tanyinghao.model.entity.OperationLog;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -20,8 +22,6 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
 import java.util.Objects;
 
 /**
@@ -67,6 +67,7 @@ public class OptLogAspect {
      * @return void
      **/
     @AfterReturning(value = "optLOgPointCut()", returning = "result")
+    @SuppressWarnings(value = "unchecked")
     public void doAfterReturning(JoinPoint joinPoint, Object result) {
         // 1. 利用反射获取织入点的方法
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
@@ -108,7 +109,7 @@ public class OptLogAspect {
         // 执行耗时
         operationLog.setTimes(System.currentTimeMillis() - startTime.get());
         startTime.remove();
-        // TODO 异步保存到数据库中
-
+        // 异步保存到数据库中
+        AsyncManager.getInstance().execute(AsyncFactory.recordOperation(operationLog));
     }
 }
