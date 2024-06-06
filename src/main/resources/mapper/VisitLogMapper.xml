@@ -16,7 +16,7 @@
             SELECT id FROM t_visit_log
                 <where>
                     <if test="keyword!=null">
-                        page like concat("%", #{keyword}, "%")
+                        page like concat('%', #{keyword}, '%')
                     </if>
                 </where>
             ORDER BY id DESC LIMIT #{limit}, #{size}
