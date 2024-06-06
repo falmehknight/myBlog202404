@@ -136,6 +136,12 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
+        <!-- 解析客户端操作系统、浏览器等 -->
+        <dependency>
+            <groupId>nl.basjes.parse.useragent</groupId>
+            <artifactId>yauaa</artifactId>
+            <version>${yauaa.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
