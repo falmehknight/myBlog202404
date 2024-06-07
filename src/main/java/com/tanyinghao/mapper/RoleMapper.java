@@ -5,6 +5,7 @@ import com.tanyinghao.model.dto.ConditionDTO;
 import com.tanyinghao.model.entity.Role;
 import com.tanyinghao.model.vo.RoleVO;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -32,4 +33,15 @@ public interface RoleMapper extends BaseMapper<Role> {
      **/
     List<RoleVO> selectRoleVOList(@Param("limit") Long limit, @Param("size") Long size, @Param("condition") ConditionDTO condition);
 
+    /**
+     *
+     * @Author TanYingHao
+     * @Description 根据用户id查询用户角色
+     * @Date 16:34 2024/6/7
+     * @Param [userId]
+     * @return java.util.List<java.lang.String>
+     **/
+    @Select("select r.id from t_role r JOIN t_user_role tur on r.id = tur.role_id " +
+            "where tur.user_id = #{userId} and r.is_disable = 0")
+    List<String> selectRoleListByUserId(@Param("userId") Object userId);
 }
