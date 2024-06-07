@@ -51,6 +51,7 @@ public class LogController {
      **/
     @ApiOperation(value = "查看操作日志")
     @GetMapping("/operation/list")
+    @SaCheckPermission("log:operation:list")
     public Result<PageResult<OperationLogVO>> listOperationLogVO(ConditionDTO condition) {
         return Result.success(operationLogService.listOperationLogVO(condition));
     }
@@ -64,6 +65,7 @@ public class LogController {
      **/
     @ApiOperation(value = "删除操作日志")
     @DeleteMapping("/operation/delete")
+    @SaCheckPermission("log:operation:delete")
     public Result<?> deleteOperationLog(@RequestBody List<Integer> logIdList) {
         operationLogService.removeByIds(logIdList);
         return Result.success();
@@ -78,6 +80,7 @@ public class LogController {
      **/
     @ApiOperation(value = "查看异常日志")
     @GetMapping("/exception/list")
+    @SaCheckPermission("log:exception:list")
     public Result<PageResult<ExceptionLog>> listExceptionLog(ConditionDTO condition) {
         return Result.success(exceptionLogService.listExceptionLog(condition));
     }
@@ -91,6 +94,7 @@ public class LogController {
      **/
     @ApiOperation(value = "删除异常日志")
     @DeleteMapping("/exception/delete")
+    @SaCheckPermission("log:exception:delete")
     public Result<?> deleteExceptionLog(@RequestBody List<Integer> logIdList) {
         exceptionLogService.removeByIds(logIdList);
         return Result.success();
@@ -105,6 +109,7 @@ public class LogController {
      **/
     @ApiOperation(value = "查看访问日志")
     @GetMapping("/visit/list")
+    @SaCheckPermission("log:visit:list")
     public Result<PageResult<VisitLog>> listVisitLog(ConditionDTO condition) {
         return Result.success(visitLogService.listVisitLog(condition));
     }
@@ -118,6 +123,7 @@ public class LogController {
      **/
     @ApiOperation(value = "删除访问日志")
     @DeleteMapping("/visit/delete")
+    @SaCheckPermission("log:visit:delete")
     public Result<?> deleteVisitLog(@RequestBody List<Integer> logIdList) {
         visitLogService.removeByIds(logIdList);
         return Result.success();
@@ -133,6 +139,7 @@ public class LogController {
      **/
     @ApiOperation("查看定时任务日志")
     @GetMapping("/taskLog/list")
+    @SaCheckPermission("log:task:list")
     public Result<PageResult<TaskLogVO>> listTaskLog(ConditionDTO condition) {
         return Result.success(taskLogService.listTaskLog(condition));
     }
@@ -147,6 +154,7 @@ public class LogController {
      **/
     @ApiOperation("删除定时任务日志")
     @DeleteMapping("/taskLog/delete")
+    @SaCheckPermission("log:task:delete")
     public Result<?> deleteTaskLog(@RequestBody List<Integer> logIdList) {
         taskLogService.removeByIds(logIdList);
         return Result.success();
@@ -162,6 +170,7 @@ public class LogController {
      **/
     @ApiOperation("清空定时任务日志")
     @DeleteMapping("taskLog/clear")
+    @SaCheckPermission("log:task:clear")
     public Result<?> clearTaskLog() {
         taskLogService.clearTaskLog();
         return Result.success();

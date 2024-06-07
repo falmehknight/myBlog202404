@@ -1,6 +1,7 @@
 package com.tanyinghao.controller.admin;
 
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import com.tanyinghao.comm.result.Result;
 import com.tanyinghao.model.dto.*;
 import com.tanyinghao.model.vo.ArticleBackVO;
@@ -36,6 +37,7 @@ public class ArticleController {
      **/
     @ApiOperation(value = "查看后台文章列表")
     @GetMapping("/list")
+    @SaCheckPermission("blog:article:list")
     public Result<PageResult<ArticleBackVO>> listArticleBackVO(ConditionDTO condition) {
         return Result.success();
     }
@@ -50,6 +52,7 @@ public class ArticleController {
      **/
     @ApiOperation(value = "添加文章")
     @PostMapping("/add")
+    @SaCheckPermission("blog:article:add")
     public Result<?> addArticle(@Validated @RequestBody ArticleDTO article) {
         return Result.success();
     }
@@ -64,6 +67,7 @@ public class ArticleController {
      **/
     @ApiOperation(value = "删除文章")
     @DeleteMapping("/delete")
+    @SaCheckPermission("blog:article:delete")
     public Result<?> deleteArticle(@RequestBody List<Integer> articleIdList) {
         return Result.success();
     }
@@ -78,6 +82,7 @@ public class ArticleController {
      **/
     @ApiOperation(value = "回收或者恢复文章")
     @PutMapping("/recycle")
+    @SaCheckPermission("blog:article:recycle")
     public Result<?> updateArticleDelete(@Validated @RequestBody DeleteDTO delete) {
         return Result.success();
     }
@@ -92,6 +97,7 @@ public class ArticleController {
      **/
     @ApiOperation(value = "修改文章")
     @PutMapping("/update")
+    @SaCheckPermission("blog:article:update")
     public Result<?> updateArticle(@Validated @RequestBody ArticleDTO article) {
         return Result.success();
     }
@@ -106,6 +112,7 @@ public class ArticleController {
      **/
     @ApiOperation(value = "编辑文章")
     @GetMapping("/edit/{articleId}")
+    @SaCheckPermission("blog:article:edit")
     public Result<ArticleInfoVO> editArticle(@PathVariable("articleId") Integer articleId) {
         return Result.success();
     }
@@ -120,6 +127,7 @@ public class ArticleController {
      **/
     @ApiOperation(value = "上传文章图片")
     @PostMapping("/upload")
+    @SaCheckPermission("blog:article:upload")
     public Result<String> saveArticleImages(@RequestParam("file") MultipartFile file) {
         return Result.success();
     }
@@ -134,6 +142,7 @@ public class ArticleController {
      **/
     @ApiOperation(value = "置顶文章")
     @PutMapping("/top")
+    @SaCheckPermission("blog:article:top")
     public Result<?> updateArticleTop(@Validated @RequestBody TopDTO top) {
         return Result.success();
     }
@@ -148,6 +157,7 @@ public class ArticleController {
      **/
     @ApiOperation(value = "推荐文章")
     @PutMapping("/recommend")
+    @SaCheckPermission("blog:article:recommend")
     public Result<?> updateArticleRecommend(@Validated @RequestBody RecommendDTO recommend) {
         return Result.success();
     }
