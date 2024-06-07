@@ -9,8 +9,10 @@ import com.tanyinghao.model.dto.RoleDTO;
 import com.tanyinghao.model.dto.RoleStatusDTO;
 import com.tanyinghao.model.vo.PageResult;
 import com.tanyinghao.model.vo.RoleVO;
+import com.tanyinghao.service.RoleService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,6 +32,9 @@ import static com.tanyinghao.comm.constant.OptTypeConstant.*;
 @RequestMapping("/admin/role")
 public class RoleController {
 
+    @Autowired
+    private RoleService roleService;
+
     /**
      *
      * @Author TanYingHao
@@ -42,7 +47,7 @@ public class RoleController {
     @SaCheckPermission("system:role:list")
     @GetMapping("/list")
     public Result<PageResult<RoleVO>> listRoleVO(ConditionDTO condition) {
-        return Result.success();
+        return Result.success(roleService.listRoleVO(condition));
     }
 
 
@@ -59,6 +64,7 @@ public class RoleController {
     @SaCheckPermission("system:role:add")
     @PostMapping("/add")
     public Result<?> addRole(@Validated @RequestBody RoleDTO role) {
+        roleService.addRole(role);
         return Result.success();
     }
 
@@ -75,6 +81,7 @@ public class RoleController {
     @SaCheckPermission("system:role:delete")
     @DeleteMapping("/delete")
     public Result<?> deleteRole(@RequestBody List<String> roleIdList) {
+        roleService.deleteRole(roleIdList);
         return Result.success();
     }
 
@@ -91,6 +98,7 @@ public class RoleController {
     @SaCheckPermission("system:role:update")
     @PutMapping("/update")
     public Result<?> updateRole(@Validated @RequestBody RoleDTO role) {
+        roleService.updateRole(role);
         return Result.success();
     }
 
@@ -107,6 +115,7 @@ public class RoleController {
     @SaCheckPermission(value = {"system:role:update", "system:role:status"}, mode = SaMode.OR)
     @PutMapping("/changeStatus")
     public Result<?> updateRoleStatus(@Validated @RequestBody RoleStatusDTO roleStatus) {
+        roleService.updateRoleStatus(roleStatus);
         return Result.success();
     }
 
@@ -122,6 +131,6 @@ public class RoleController {
     @SaCheckPermission("system:role:list")
     @GetMapping("/menu/{roleId}")
     public Result<List<Integer>> listRoleMenuTree(@PathVariable("roleId") String roleId) {
-        return Result.success();
+        return Result.success(roleService.listRoleMenuTree(roleId));
     }
 }

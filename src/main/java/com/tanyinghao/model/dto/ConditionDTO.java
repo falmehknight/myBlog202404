@@ -69,7 +69,7 @@ public class ConditionDTO {
     private Integer commentType;
 
     /**
-     * 文章类型 (1原创 2转载 3翻译)
+     * 文章类型 (1 原创 2 转载 3 翻译)
      */
     @ApiModelProperty(value = "文章类型 (1原创 2转载 3翻译)")
     private Integer articleType;
