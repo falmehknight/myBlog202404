@@ -8,8 +8,13 @@ import com.tanyinghao.model.entity.VisitLog;
 import com.tanyinghao.model.vo.OperationLogVO;
 import com.tanyinghao.model.vo.PageResult;
 import com.tanyinghao.model.vo.TaskLogVO;
+import com.tanyinghao.service.ExceptionLogService;
+import com.tanyinghao.service.OperationLogService;
+import com.tanyinghao.service.TaskLogService;
+import com.tanyinghao.service.VisitLogService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,6 +31,17 @@ import java.util.List;
 @RequestMapping("/admin")
 public class LogController {
 
+    @Autowired
+    private OperationLogService operationLogService;
+
+    @Autowired
+    private ExceptionLogService exceptionLogService;
+
+    @Autowired
+    private VisitLogService visitLogService;
+
+    @Autowired
+    private TaskLogService taskLogService;
     /**
      * @return com.tanyinghao.comm.result.Result<com.tanyinghao.model.vo.PageResult < com.tanyinghao.model.vo.OperationLogVO>>
      * @Author TanYingHao
@@ -36,7 +52,7 @@ public class LogController {
     @ApiOperation(value = "查看操作日志")
     @GetMapping("/operation/list")
     public Result<PageResult<OperationLogVO>> listOperationLogVO(ConditionDTO condition) {
-        return Result.success();
+        return Result.success(operationLogService.listOperationLogVO(condition));
     }
 
     /**
@@ -49,6 +65,7 @@ public class LogController {
     @ApiOperation(value = "删除操作日志")
     @DeleteMapping("/operation/delete")
     public Result<?> deleteOperationLog(@RequestBody List<Integer> logIdList) {
+        operationLogService.removeByIds(logIdList);
         return Result.success();
     }
 
@@ -62,7 +79,7 @@ public class LogController {
     @ApiOperation(value = "查看异常日志")
     @GetMapping("/exception/list")
     public Result<PageResult<ExceptionLog>> listExceptionLog(ConditionDTO condition) {
-        return Result.success();
+        return Result.success(exceptionLogService.listExceptionLog(condition));
     }
 
     /**
@@ -75,6 +92,7 @@ public class LogController {
     @ApiOperation(value = "删除异常日志")
     @DeleteMapping("/exception/delete")
     public Result<?> deleteExceptionLog(@RequestBody List<Integer> logIdList) {
+        exceptionLogService.removeByIds(logIdList);
         return Result.success();
     }
 
@@ -88,7 +106,7 @@ public class LogController {
     @ApiOperation(value = "查看访问日志")
     @GetMapping("/visit/list")
     public Result<PageResult<VisitLog>> listVisitLog(ConditionDTO condition) {
-        return Result.success();
+        return Result.success(visitLogService.listVisitLog(condition));
     }
 
     /**
@@ -101,6 +119,7 @@ public class LogController {
     @ApiOperation(value = "删除访问日志")
     @DeleteMapping("/visit/delete")
     public Result<?> deleteVisitLog(@RequestBody List<Integer> logIdList) {
+        visitLogService.removeByIds(logIdList);
         return Result.success();
     }
 
@@ -115,7 +134,7 @@ public class LogController {
     @ApiOperation("查看定时任务日志")
     @GetMapping("/taskLog/list")
     public Result<PageResult<TaskLogVO>> listTaskLog(ConditionDTO condition) {
-        return Result.success();
+        return Result.success(taskLogService.listTaskLog(condition));
     }
 
     /**
@@ -129,6 +148,7 @@ public class LogController {
     @ApiOperation("删除定时任务日志")
     @DeleteMapping("/taskLog/delete")
     public Result<?> deleteTaskLog(@RequestBody List<Integer> logIdList) {
+        taskLogService.removeByIds(logIdList);
         return Result.success();
     }
 
@@ -143,6 +163,7 @@ public class LogController {
     @ApiOperation("清空定时任务日志")
     @DeleteMapping("taskLog/clear")
     public Result<?> clearTaskLog() {
+        taskLogService.clearTaskLog();
         return Result.success();
     }
 }
