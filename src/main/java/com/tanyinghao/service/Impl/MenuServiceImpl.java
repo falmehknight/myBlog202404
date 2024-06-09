@@ -108,6 +108,11 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
         return recurMenuOptionList(PARENT_ID, menuOptionList);
     }
 
+    @Override
+    public MenuDTO editMenu(Integer menuId) {
+        return menuMapper.selectMenuById(menuId);
+    }
+
     /**
      *
      * @Author TanYingHao

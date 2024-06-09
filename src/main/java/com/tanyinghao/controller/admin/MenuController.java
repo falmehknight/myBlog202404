@@ -130,4 +130,11 @@ public class MenuController {
     public Result<List<MenuOption>> listMenuOption() {
         return Result.success(menuService.listMenuOption());
     }
+
+    @ApiOperation("编辑菜单")
+    @SaCheckPermission("system:menu:edit")
+    @GetMapping("/edit/{menuId}")
+    public Result<MenuDTO> editMenu(@PathVariable("menuId") Integer menuId) {
+        return Result.success(menuService.editMenu(menuId));
+    }
 }

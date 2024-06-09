@@ -71,4 +71,14 @@ public interface MenuService extends IService<Menu> {
      * @return java.util.List<com.tanyinghao.model.vo.MenuOption>
      **/
     List<MenuOption> listMenuOption();
+
+    /**
+     *
+     * @Author TanYingHao
+     * @Description 编辑菜单
+     * @Date 15:39 2024/6/9
+     * @Param [menuId]
+     * @return com.tanyinghao.model.dto.MenuDTO
+     **/
+    MenuDTO editMenu(Integer menuId);
 }

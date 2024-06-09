@@ -2,6 +2,7 @@ package com.tanyinghao.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.tanyinghao.model.dto.ConditionDTO;
+import com.tanyinghao.model.dto.MenuDTO;
 import com.tanyinghao.model.entity.Menu;
 import com.tanyinghao.model.vo.MenuOption;
 import com.tanyinghao.model.vo.MenuTree;
@@ -59,4 +60,16 @@ public interface MenuMapper extends BaseMapper<Menu> {
     @Select("SELECT id as 'value', parent_id, menu_name as label FROM t_menu WHERE is_disable = 0 " +
             "AND menu_type IN('M','C') ORDER BY order_num")
     List<MenuOption> selectMenuOptions();
+
+    /**
+     *
+     * @Author TanYingHao
+     * @Description 根据id查询菜单信息
+     * @Date 15:41 2024/6/9
+     * @Param [menuId]
+     * @return com.tanyinghao.model.dto.MenuDTO
+     **/
+    @Select("SELECT id, parent_id, menu_type, menu_name, `path`, icon, component, perms, is_hidden, is_disable," +
+            "order_num FROM t_menu WHERE id = #{menuId}")
+    MenuDTO selectMenuById(@Param("menuId") Integer menuId);
 }
