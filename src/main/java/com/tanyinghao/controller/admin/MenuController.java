@@ -8,8 +8,10 @@ import com.tanyinghao.model.dto.MenuDTO;
 import com.tanyinghao.model.vo.MenuOption;
 import com.tanyinghao.model.vo.MenuTree;
 import com.tanyinghao.model.vo.MenuVO;
+import com.tanyinghao.service.MenuService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,6 +31,9 @@ import static com.tanyinghao.comm.constant.OptTypeConstant.*;
 @RequestMapping("/admin/menu")
 public class MenuController {
 
+    @Autowired
+    private MenuService menuService;
+
     /**
      *
      * @Author TanYingHao
@@ -41,7 +46,7 @@ public class MenuController {
     @SaCheckPermission("system:menu:list")
     @GetMapping("/list")
     public Result<List<MenuVO>> listMenuVO(ConditionDTO condition) {
-        return Result.success();
+        return Result.success(menuService.listMenuVO(condition));
     }
 
     /**
@@ -57,6 +62,7 @@ public class MenuController {
     @SaCheckPermission("system:menu:add")
     @PostMapping("/add")
     public Result<?> addMenu(@Validated @RequestBody MenuDTO menu) {
+        menuService.addMenu(menu);
         return Result.success();
     }
 
@@ -73,6 +79,7 @@ public class MenuController {
     @SaCheckPermission("system:menu:delete")
     @DeleteMapping("/delete/{menuId}")
     public Result<?> deleteMenu(@PathVariable("menuId") Integer menuId) {
+        menuService.deleteMenu(menuId);
         return Result.success();
     }
 
@@ -90,6 +97,7 @@ public class MenuController {
     @SaCheckPermission("system:menu:update")
     @PutMapping("/update")
     public Result<?> updateMenu(@Validated @RequestBody MenuDTO menu) {
+        menuService.updateMenu(menu);
         return Result.success();
     }
 
@@ -105,7 +113,7 @@ public class MenuController {
     @SaCheckPermission("system:role:list")
     @GetMapping("/getMenuTree")
     public Result<List<MenuTree>> listMenuTree() {
-        return Result.success();
+        return Result.success(menuService.listMenuTree());
     }
 
     /**
@@ -120,6 +128,6 @@ public class MenuController {
     @SaCheckPermission("system:role:list")
     @GetMapping("/getMenuOptions")
     public Result<List<MenuOption>> listMenuOption() {
-        return Result.success();
+        return Result.success(menuService.listMenuOption());
     }
 }
