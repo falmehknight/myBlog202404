@@ -3,7 +3,9 @@ package com.tanyinghao.service.Impl;
 import cn.dev33.satoken.session.SaSession;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.lang.Assert;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.tanyinghao.comm.utils.PageUtils;
 import com.tanyinghao.comm.utils.SecurityUtils;
@@ -11,20 +13,18 @@ import com.tanyinghao.mapper.MenuMapper;
 import com.tanyinghao.mapper.RoleMapper;
 import com.tanyinghao.mapper.UserMapper;
 import com.tanyinghao.mapper.UserRoleMapper;
-import com.tanyinghao.model.dto.ConditionDTO;
-import com.tanyinghao.model.dto.DisableDTO;
-import com.tanyinghao.model.dto.PasswordDTO;
-import com.tanyinghao.model.dto.UserRoleDTO;
+import com.tanyinghao.model.dto.*;
 import com.tanyinghao.model.entity.User;
 import com.tanyinghao.model.entity.UserRole;
 import com.tanyinghao.model.vo.*;
+import com.tanyinghao.service.RedisService;
 import com.tanyinghao.service.UserService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
-import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -32,6 +32,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.tanyinghao.comm.constant.CommConstant.*;
+import static com.tanyinghao.comm.constant.RedisConstant.CODE_KEY;
 
 /**
  * @ClassName UserServiceImpl
@@ -54,6 +55,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Autowired
     private UserRoleMapper userRoleMapper;
+
+    @Autowired
+    private RedisService redisService;
 
     @Override
     public UserBackInfoVO getUserBackInfo() {
@@ -178,6 +182,57 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         String newPassword = SecurityUtils.sha256Encrypt(password.getNewPassword());
         user.setPassword(newPassword);
         userMapper.updateById(user);
+    }
+
+    @Override
+    public UserInfoVO getUserInfo() {
+        return null;
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void updateUserEmail(EmailDTO email) {
+        verifyCode(email.getEmail(),email.getCode());
+        User user = User.builder()
+                .id(StpUtil.getLoginIdAsInt())
+                .email(email.getEmail())
+                .build();
+        userMapper.updateById(user);
+    }
+
+    @Override
+    public String updateUserAvatar(MultipartFile file) {
+        return null;
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void updateUserInfo(UserInfoDTO userInfo) {
+        User newUser = User.builder()
+                .nickname(userInfo.getNickname())
+                .intro(userInfo.getIntro())
+                .webSite(userInfo.getWebSite())
+                .build();
+        userMapper.updateById(newUser);
+    }
+
+    @Override
+    public void updatePassword(UserDTO user) {
+        verifyCode(user.getUsername(), user.getCode());
+        User existUser = userMapper.selectOne(new LambdaQueryWrapper<User>()
+                .select(User::getUsername)
+                .eq(User::getUsername, user.getUsername()));
+        Assert.notNull(existUser, "邮箱未注册");
+        // 根据用户名修改密码
+        userMapper.update(new User(), new LambdaUpdateWrapper<User>()
+                .set(User::getPassword, SecurityUtils.sha256Encrypt(user.getPassword()))
+                .eq(User::getUsername, user.getUsername()));
+    }
+
+    private void verifyCode(String username, String code) {
+        String sysCode = redisService.getObject(CODE_KEY + username);
+        Assert.notBlank(sysCode, "验证码未发送或者已经过期");
+        Assert.isTrue(sysCode.equals(code), "验证码错误，请重新输入");
     }
 
     /**

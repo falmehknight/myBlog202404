@@ -2,12 +2,10 @@ package com.tanyinghao.service;
 
 import cn.hutool.db.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.tanyinghao.model.dto.ConditionDTO;
-import com.tanyinghao.model.dto.DisableDTO;
-import com.tanyinghao.model.dto.PasswordDTO;
-import com.tanyinghao.model.dto.UserRoleDTO;
+import com.tanyinghao.model.dto.*;
 import com.tanyinghao.model.entity.User;
 import com.tanyinghao.model.vo.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -97,4 +95,54 @@ public interface UserService extends IService<User> {
      * @Param [password]
      **/
     void updateAdminPassword(PasswordDTO password);
+
+    /**
+     *
+     * @Author TanYingHao
+     * @Description 获取登录用户信息
+     * @Date 22:25 2024/6/10
+     * @Param []
+     * @return com.tanyinghao.model.vo.UserInfoVO
+     **/
+    UserInfoVO getUserInfo();
+
+    /**
+     *
+     * @Author TanYingHao
+     * @Description 修改用户邮箱
+     * @Date 22:28 2024/6/10
+     * @Param [email]
+     * @return void
+     **/
+    void updateUserEmail(EmailDTO email);
+
+    /**
+     *
+     * @Author TanYingHao
+     * @Description 修改用户头像
+     * @Date 22:31 2024/6/10
+     * @Param [file]
+     * @return java.lang.String
+     **/
+    String updateUserAvatar(MultipartFile file);
+
+    /**
+     *
+     * @Author TanYingHao
+     * @Description 修改用户信息
+     * @Date 22:35 2024/6/10
+     * @Param [userInfo]
+     * @return void
+     **/
+    void updateUserInfo(UserInfoDTO userInfo);
+
+    /**
+     *
+     * @Author TanYingHao
+     * @Description 修改用户密码
+     * @Date 22:38 2024/6/10
+     * @Param [user]
+     * @return void
+     **/
+    void updatePassword(UserDTO user);
 }
