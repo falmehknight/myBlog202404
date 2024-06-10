@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.tanyinghao.model.dto.ConditionDTO;
 import com.tanyinghao.model.entity.Role;
 import com.tanyinghao.model.vo.RoleVO;
+import com.tanyinghao.model.vo.UserRoleVO;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
@@ -44,4 +45,15 @@ public interface RoleMapper extends BaseMapper<Role> {
     @Select("select r.id from t_role r JOIN t_user_role tur on r.id = tur.role_id " +
             "where tur.user_id = #{userId} and r.is_disable = 0")
     List<String> selectRoleListByUserId(@Param("userId") Object userId);
+
+    /**
+     *
+     * @Author TanYingHao
+     * @Description 查询角色列表
+     * @Date 21:29 2024/6/10
+     * @Param []
+     * @return java.util.List<com.tanyinghao.model.vo.UserRoleVO>
+     **/
+    @Select("select id, role_name from t_role")
+    List<UserRoleVO> selectUserRoleList();
 }

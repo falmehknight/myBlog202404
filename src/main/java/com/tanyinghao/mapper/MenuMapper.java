@@ -7,6 +7,7 @@ import com.tanyinghao.model.entity.Menu;
 import com.tanyinghao.model.vo.MenuOption;
 import com.tanyinghao.model.vo.MenuTree;
 import com.tanyinghao.model.vo.MenuVO;
+import com.tanyinghao.model.vo.UserMenuVO;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
@@ -72,4 +73,7 @@ public interface MenuMapper extends BaseMapper<Menu> {
     @Select("SELECT id, parent_id, menu_type, menu_name, `path`, icon, component, perms, is_hidden, is_disable," +
             "order_num FROM t_menu WHERE id = #{menuId}")
     MenuDTO selectMenuById(@Param("menuId") Integer menuId);
+
+
+    List<UserMenuVO> selectMenuByUserId(@Param("userId") int loginIdAsInt);
 }

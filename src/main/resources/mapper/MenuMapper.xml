@@ -27,4 +27,26 @@
         </where>
         Order by order_num
     </select>
+    <select id="selectMenuByUserId" resultType="com.tanyinghao.model.vo.UserMenuVO">
+        SELECT DISTINCT
+            m.id,
+            m.parent_id,
+            m.menu_name,
+            m.menu_type,
+            m.path,
+            m.icon,
+            m.order_num,
+            m.component,
+            m.is_hidden
+        FROM t_menu m
+            JOIN t_role_menu trm on m.id = trm.menu_id
+            JOIN t_user_role tur on trm.role_id = tur.id
+            JOIN t_role tr on tur.role_id = tr.id
+        WHERE
+            m.menu_type in ('M', 'C')
+            AND m.is_disable = 0
+            AND tr.is_disable = 0
+            AND tur.user_id = #{userId}
+        ORDER BY m.parent_id, m.order_num
+    </select>
 </mapper>

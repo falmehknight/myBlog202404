@@ -9,8 +9,10 @@ import com.tanyinghao.model.dto.DisableDTO;
 import com.tanyinghao.model.dto.PasswordDTO;
 import com.tanyinghao.model.dto.UserRoleDTO;
 import com.tanyinghao.model.vo.*;
+import com.tanyinghao.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,6 +33,8 @@ import static com.tanyinghao.comm.constant.OptTypeConstant.UPDATE;
 @RequestMapping("/admin")
 public class UserController {
 
+    @Autowired
+    private UserService userService;
     /**
      *
      * @Author TanYingHao
@@ -42,7 +46,7 @@ public class UserController {
     @ApiOperation("获取后台登录用户信息")
     @GetMapping("/user/getUserInfo")
     public Result<UserBackInfoVO> getUserBackInfo() {
-        return Result.success();
+        return Result.success(userService.getUserBackInfo());
     }
 
     /**
@@ -56,7 +60,7 @@ public class UserController {
     @ApiOperation("获取登录用户菜单")
     @GetMapping("/user/getUserMenu")
     public Result<List<RouterVO>> getUserMenu() {
-        return Result.success();
+        return Result.success(userService.getUserMenu());
     }
 
     /**
@@ -71,7 +75,7 @@ public class UserController {
     @SaCheckPermission("system:user:list")
     @GetMapping("/user/list")
     public Result<PageResult<UserBackVO>> listUserBackVO(ConditionDTO condition) {
-        return Result.success();
+        return Result.success(userService.listUserBackVO(condition));
     }
 
     /**
@@ -86,7 +90,7 @@ public class UserController {
     @SaCheckPermission("system:user:list")
     @GetMapping("/user/role")
     public Result<List<UserRoleVO>> listUserRoleVO() {
-        return Result.success();
+        return Result.success(userService.listUserRoleVO());
     }
 
     /**
@@ -102,6 +106,7 @@ public class UserController {
     @SaCheckPermission("system:user:update")
     @PutMapping("/user/update")
     public Result<?> updateUser(@Validated @RequestBody UserRoleDTO userRole) {
+        userService.updateUser(userRole);
         return Result.success();
     }
 
@@ -118,6 +123,7 @@ public class UserController {
     @SaCheckPermission("system:user:status")
     @PutMapping("/user/changeStatus")
     public Result<?> updateUserStatus(@Validated @RequestBody DisableDTO disable) {
+        userService.updateUserStatus(disable);
         return Result.success();
     }
 
@@ -133,7 +139,7 @@ public class UserController {
     @SaCheckPermission("monitor:online:list")
     @GetMapping("/user/list")
     public Result<PageResult<OnlineVO>> listOnlineUser(ConditionDTO condition) {
-        return Result.success();
+        return Result.success(userService.listOnlineUser(condition));
     }
 
 
@@ -150,6 +156,7 @@ public class UserController {
     @SaCheckPermission("monitor:online:kick")
     @GetMapping("/online/kick/{token}")
     public Result<?> kickOutUser(@PathVariable("token") String token) {
+        userService.kickOutUser(token);
         return Result.success();
     }
 
@@ -165,6 +172,7 @@ public class UserController {
     @ApiOperation(value = "修改管理员密码")
     @PutMapping("/password")
     public Result<?> updateAdminPassword(@Validated @RequestBody PasswordDTO password) {
+        userService.updateAdminPassword(password);
         return Result.success();
     }
 
