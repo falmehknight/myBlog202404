@@ -7,6 +7,7 @@ import cn.hutool.core.lang.Assert;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.tanyinghao.comm.enums.FilePathEnum;
 import com.tanyinghao.comm.utils.PageUtils;
 import com.tanyinghao.comm.utils.SecurityUtils;
 import com.tanyinghao.mapper.MenuMapper;
@@ -19,6 +20,8 @@ import com.tanyinghao.model.entity.UserRole;
 import com.tanyinghao.model.vo.*;
 import com.tanyinghao.service.RedisService;
 import com.tanyinghao.service.UserService;
+import com.tanyinghao.strategy.UploadStrategy;
+import com.tanyinghao.strategy.context.UploadStrategyContext;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -55,6 +58,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Autowired
     private RedisService redisService;
+
+    @Autowired
+    private UploadStrategyContext uploadStrategyContext;
 
     @Override
     public UserBackInfoVO getUserBackInfo() {
@@ -219,7 +225,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Transactional(rollbackFor = Exception.class)
     @Override
     public String updateUserAvatar(MultipartFile file) {
-        return null;
+        // 头像上传
+        String avatar = uploadStrategyContext.executeUploadStrategy(file, FilePathEnum.AVATAR.getPath());
+        User user = User.builder()
+                .id(StpUtil.getLoginIdAsInt())
+                .avatar(avatar)
+                .build();
+        userMapper.updateById(user);
+        return avatar;
     }
 
     @Transactional(rollbackFor = Exception.class)
