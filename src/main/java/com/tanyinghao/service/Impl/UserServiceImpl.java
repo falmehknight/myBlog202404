@@ -25,14 +25,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.tanyinghao.comm.constant.CommConstant.*;
-import static com.tanyinghao.comm.constant.RedisConstant.CODE_KEY;
+import static com.tanyinghao.comm.constant.RedisConstant.*;
 
 /**
  * @ClassName UserServiceImpl
@@ -186,7 +183,26 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     public UserInfoVO getUserInfo() {
-        return null;
+        Integer userId = StpUtil.getLoginIdAsInt();
+        User user = userMapper.selectOne(new LambdaQueryWrapper<User>()
+                .select(User::getAvatar, User::getNickname, User::getUsername, User::getEmail, User::getWebSite,
+                        User::getIntro, User::getLoginType)
+                .eq(User::getId, userId));
+        Set<Object> articleLikeSet = redisService.getSet(USER_ARTICLE_LIKE + userId);
+        Set<Object> commentLikeSet = redisService.getSet(USER_COMMENT_LIKE + userId);
+        Set<Object> talkLikeSet = redisService.getSet(USER_TALK_LIKE + userId);
+        return UserInfoVO.builder()
+                .avatar(user.getAvatar())
+                .nickname(user.getNickname())
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .webSite(user.getWebSite())
+                .intro(user.getIntro())
+                .loginType(user.getLoginType())
+                .articleLikeSet(articleLikeSet)
+                .commentLikeSet(commentLikeSet)
+                .talkLikeSet(talkLikeSet)
+                .build();
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -200,6 +216,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         userMapper.updateById(user);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public String updateUserAvatar(MultipartFile file) {
         return null;
