@@ -14,4 +14,18 @@
         join t_article_tag at on t.id = at.tag_id
         where article_id = #{articleId}
     </select>
+    <select id="selectTagBackVO" resultType="com.tanyinghao.model.vo.TagBackVO">
+        SELECT t.id, t.tag_name, COUNT(tat.article_id) as article_count, t.create_time
+        FROM t_tag t
+        LEFT JOIN t_article_tag tat
+        ON t.id = tat.tag_id
+        <where>
+            <if test="keyword != null">
+                tag_name like concat('%',#{keyword},'%')
+            </if>
+        </where>
+        GROUP BY t.id
+        ORDER BY t.id DESC
+        LIMIT #{limit},#{size}
+    </select>
 </mapper>
