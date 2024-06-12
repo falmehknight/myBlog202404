@@ -139,5 +139,20 @@
           AND `status` = 1
           AND a.id = #{articleId}
     </select>
+    <select id="searchArticle" resultType="com.tanyinghao.model.vo.ArticleSearchVO">
+        SELECT id,
+        article_title,
+        article_content,
+        is_delete,
+        `status`
+        FROM t_article
+        <where>
+            is_delete = 0 and `status` = 1
+            <if test="keyword != null">
+                and (article_title like concat('%',#{keyword},'%')
+                or article_content like concat('%',#{keyword},'%'))
+            </if>
+        </where>
+    </select>
 
 </mapper>

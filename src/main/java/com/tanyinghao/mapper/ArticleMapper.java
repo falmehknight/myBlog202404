@@ -112,4 +112,14 @@ public interface ArticleMapper extends BaseMapper<Article> {
     @Select("SELECT id, article_title, article_cover, create_time FROM t_article WHERE is_delete = 0 AND `status` = 1 "
             + "ORDER BY create_time limit #{limit}, ${size}")
     List<ArchiveVO> selectArchiveList(@Param("limit") Long limit, @Param("size") Long size);
+
+    /**
+     *
+     * @Author TanYingHao
+     * @Description 搜索文章
+     * @Date 17:43 2024/6/12
+     * @Param [keyWord]
+     * @return java.util.List<com.tanyinghao.model.vo.ArticleSearchVO>
+     **/
+    List<ArticleSearchVO> searchArticle(@Param("keyword") String keyWord);
 }

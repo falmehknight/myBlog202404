@@ -171,6 +171,12 @@
             <artifactId>cos_api</artifactId>
             <version>${cos.version}</version>
         </dependency>
+        <!-- elasticsearch -->
+        <dependency>
+            <groupId>co.elastic.clients</groupId>
+            <artifactId>elasticsearch-java</artifactId>
+            <version>${elasticsearch.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
