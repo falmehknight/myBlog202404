@@ -61,7 +61,6 @@ public interface ArticleService extends IService<Article> {
      * @Description 修改文章
      * @Date 16:10 2024/6/11
      * @Param [article]
-     * @return void
      **/
     void updateArticle(ArticleDTO article);
 

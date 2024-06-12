@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tanyinghao.mapper.TagMapper">
+
+    <select id="selectTagList" resultType="com.tanyinghao.model.entity.Tag">
+        select id, tag_name from t_tag where tag_name in
+        <foreach collection="tagNameList" item="tagName" open="(" separator="," close=")">
+            #{tagName}
+        </foreach>
+    </select>
+    <select id="selectTagNameByArticleId" resultType="java.lang.String">
+        Select t.tag_name
+        FROM t_tag t
+        join t_article_tag at on t.id = at.tag_id
+        where article_id = #{articleId}
+    </select>
+</mapper>
