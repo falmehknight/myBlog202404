@@ -86,5 +86,58 @@
         LEFT JOIN t_article_tag tat ON a.id = tat.article_id
         LEFT JOIN t_tag t ON t.id = tat.tag_id
     </select>
+    <select id="selectArticleHomeList" resultType="com.tanyinghao.model.vo.ArticleHomeVO">
+        SELECT a.id,
+               article_cover,
+               article_title,
+               SUBSTR(article_content, 1, 500) AS article_content,
+               a.create_time,
+               a.article_type,
+               a.is_top,
+               a.category_id,
+               category_name,
+               t.id                            AS tag_id,
+               t.tag_name
+        FROM (
+                 SELECT id,
+                        article_cover,
+                        article_title,
+                        article_content,
+                        article_type,
+                        is_top,
+                        create_time,
+                        category_id
+                 FROM t_article
+                 WHERE is_delete = 0
+                   AND `status` = 1
+                 ORDER BY is_top DESC,
+                          id DESC LIMIT #{limit}, #{size}
+             ) a
+                 INNER JOIN t_category c ON a.category_id = c.id
+                 INNER JOIN t_article_tag tat ON a.id = tat.article_id
+                 INNER JOIN t_tag t ON t.id = tat.tag_id
+        ORDER BY a.is_top DESC,
+                 a.id DESC
+    </select>
+    <select id="selectArticleHomeById" resultType="com.tanyinghao.model.vo.ArticleVO">
+        SELECT a.id,
+               article_cover,
+               article_title,
+               article_content,
+               article_type,
+               a.create_time,
+               a.update_time,
+               a.category_id,
+               c.category_name,
+               t.id AS tag_id,
+               tag_name
+        FROM t_article a
+                 INNER JOIN t_category c ON a.category_id = c.id
+                 INNER JOIN t_article_tag tat ON a.id = tat.article_id
+                 INNER JOIN t_tag t ON tat.tag_id = t.id
+        WHERE is_delete = 0
+          AND `status` = 1
+          AND a.id = #{articleId}
+    </select>
 
 </mapper>

@@ -9,9 +9,7 @@ import com.tanyinghao.comm.utils.PageUtils;
 import com.tanyinghao.mapper.*;
 import com.tanyinghao.model.dto.*;
 import com.tanyinghao.model.entity.*;
-import com.tanyinghao.model.vo.ArticleBackVO;
-import com.tanyinghao.model.vo.ArticleInfoVO;
-import com.tanyinghao.model.vo.PageResult;
+import com.tanyinghao.model.vo.*;
 import com.tanyinghao.service.ArticleService;
 import com.tanyinghao.service.RedisService;
 import com.tanyinghao.service.TagService;
@@ -33,6 +31,7 @@ import java.util.stream.Collectors;
 
 import static com.tanyinghao.comm.constant.CommConstant.FALSE;
 import static com.tanyinghao.comm.constant.RedisConstant.*;
+import static com.tanyinghao.comm.enums.ArticleStatusEnum.PUBLIC;
 import static com.tanyinghao.comm.enums.FilePathEnum.ARTICLE;
 
 /**
@@ -108,73 +107,6 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         baseMapper.insert(newArticle);
         // 保存文章标签
         saveArticleTag(article, newArticle.getId());
-    }
-    
-    /**
-     *
-     * @Author TanYingHao
-     * @Description 保存文章标签 
-     * @Date 14:34 2024/6/12
-     * @Param [article, id]
-     **/
-    private void saveArticleTag(ArticleDTO article, Integer articleId) {
-        // 删除id文章的标签
-        articleTagMapper.delete(new LambdaQueryWrapper<ArticleTag>()
-                .eq(ArticleTag::getArticleId, articleId)
-        );
-        // 获取标签名集合
-        List<String> tagNameList = article.getTagNameList();
-        if (CollectionUtils.isNotEmpty(tagNameList)) {
-            // 查询已存在的标签
-            List<Tag> existTagList = tagMapper.selectTagList(tagNameList);
-            List<String> existTagNameList = existTagList.stream()
-                    .map(Tag::getTagName)
-                    .collect(Collectors.toList());
-            List<Integer> existTagIdList = existTagList.stream()
-                    .map(Tag::getId)
-                    .collect(Collectors.toList());
-            // 删除已存在的标签列表
-            tagNameList.removeAll(existTagNameList);
-            // 含有新标签
-            if (CollectionUtils.isNotEmpty(tagNameList)) {
-                // 新标签列表
-                List<Tag> newTagList = tagNameList.stream()
-                        .map(item -> Tag.builder().tagName(item).build())
-                        .collect(Collectors.toList());
-                // 保存新标签
-                tagService.saveBatch(newTagList);
-                // 获取新标签id列表
-                List<Integer> newTagIdList = newTagList.stream()
-                        .map(Tag::getId)
-                        .collect(Collectors.toList());
-                // 将新标签保存一下
-                existTagIdList.addAll(newTagIdList);
-            }
-            // 将所有标签绑定到文章标签关联表中
-            articleTagMapper.saveBatchArticleTag(articleId, existTagIdList);
-        }
-
-    }
-    
-    /**
-     *
-     * @Author TanYingHao
-     * @Description 保存文章分类
-     * @Date 14:34 2024/6/12
-     * @Param [article]
-     * @return java.lang.Integer
-     **/
-    private Integer saveArticleCategory(ArticleDTO article) {
-        //  查询是否存在该分类
-        Category category = categoryMapper.selectOne(new LambdaQueryWrapper<Category>()
-                .select(Category::getId)
-                .eq(Category::getCategoryName, article.getCategoryName()));
-        if (Objects.isNull(category)) {
-            // 不存在则新建并插入
-            category = Category.builder().categoryName(article.getCategoryName()).build();
-            categoryMapper.insert(category);
-        }
-        return category.getId();
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -279,5 +211,133 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
                 .isRecommend(recommend.getIsRecommend())
                 .build();
         articleMapper.updateById(article);
+    }
+
+    @Override
+    public List<ArticleSearchVO> listArticlesBySearch(String keyword) {
+        return null;
+    }
+
+    @Override
+    public PageResult<ArticleHomeVO> listArticleHomeVO() {
+        // 查询文章数量
+        Long count = articleMapper.selectCount(new LambdaQueryWrapper<Article>()
+                .eq(Article::getIsDelete, FALSE)
+                .eq(Article::getStatus, PUBLIC.getStatus()));
+        if (count == 0) {
+            return new PageResult<>();
+        }
+        List<ArticleHomeVO> articleHomeVOList = articleMapper.selectArticleHomeList(PageUtils.getLimit(), PageUtils.getSize());
+        return new PageResult<>(articleHomeVOList, count);
+    }
+
+    @Override
+    public ArticleVO getArticleHomeById(Integer articleId) {
+        // 查询文章信息
+        ArticleVO article = articleMapper.selectArticleHomeById(articleId);
+        if (Objects.isNull(article)) {
+            return null;
+        }
+        // 浏览量+1
+        redisService.incrZet(ARTICLE_VIEW_COUNT, articleId, 1D);
+        // 查询上一篇文章
+        ArticlePaginationVO lastArticle = articleMapper.selectLastArticle(articleId);
+        // 查询下一篇文章
+        ArticlePaginationVO nextArticle = articleMapper.selectNextArticle(articleId);
+        article.setLastArticle(lastArticle);
+        article.setNextArticle(nextArticle);
+        // 查询浏览量
+        Double viewCount = Optional.ofNullable(redisService.getZsetScore(ARTICLE_VIEW_COUNT, articleId))
+                .orElse((double) 0);
+        article.setViewCount(viewCount.intValue());
+        // 查询点赞量
+        Integer likeCount = redisService.getHash(ARTICLE_LIKE_COUNT, articleId.toString());
+        article.setLikeCount(likeCount);
+        return article;
+    }
+
+    @Override
+    public List<ArticleRecommendVO> listArticleRecommendVO() {
+        return articleMapper.selectArticleRecommend();
+    }
+
+    @Override
+    public PageResult<ArchiveVO> listArchiveVO() {
+        // 查询文章数量
+        Long count = articleMapper.selectCount(new LambdaQueryWrapper<Article>()
+                .eq(Article::getIsDelete, FALSE)
+                .eq(Article::getStatus, PUBLIC.getStatus()));
+        if (count == 0) {
+            return new PageResult<>();
+        }
+        List<ArchiveVO> archiveList = articleMapper.selectArchiveList(PageUtils.getLimit(), PageUtils.getSize());
+        return new PageResult<>(archiveList, count);
+    }
+
+    /**
+     *
+     * @Author TanYingHao
+     * @Description 保存文章标签
+     * @Date 14:34 2024/6/12
+     * @Param [article, id]
+     **/
+    private void saveArticleTag(ArticleDTO article, Integer articleId) {
+        // 删除id文章的标签
+        articleTagMapper.delete(new LambdaQueryWrapper<ArticleTag>()
+                .eq(ArticleTag::getArticleId, articleId)
+        );
+        // 获取标签名集合
+        List<String> tagNameList = article.getTagNameList();
+        if (CollectionUtils.isNotEmpty(tagNameList)) {
+            // 查询已存在的标签
+            List<Tag> existTagList = tagMapper.selectTagList(tagNameList);
+            List<String> existTagNameList = existTagList.stream()
+                    .map(Tag::getTagName)
+                    .collect(Collectors.toList());
+            List<Integer> existTagIdList = existTagList.stream()
+                    .map(Tag::getId)
+                    .collect(Collectors.toList());
+            // 删除已存在的标签列表
+            tagNameList.removeAll(existTagNameList);
+            // 含有新标签
+            if (CollectionUtils.isNotEmpty(tagNameList)) {
+                // 新标签列表
+                List<Tag> newTagList = tagNameList.stream()
+                        .map(item -> Tag.builder().tagName(item).build())
+                        .collect(Collectors.toList());
+                // 保存新标签
+                tagService.saveBatch(newTagList);
+                // 获取新标签id列表
+                List<Integer> newTagIdList = newTagList.stream()
+                        .map(Tag::getId)
+                        .collect(Collectors.toList());
+                // 将新标签保存一下
+                existTagIdList.addAll(newTagIdList);
+            }
+            // 将所有标签绑定到文章标签关联表中
+            articleTagMapper.saveBatchArticleTag(articleId, existTagIdList);
+        }
+
+    }
+
+    /**
+     *
+     * @Author TanYingHao
+     * @Description 保存文章分类
+     * @Date 14:34 2024/6/12
+     * @Param [article]
+     * @return java.lang.Integer
+     **/
+    private Integer saveArticleCategory(ArticleDTO article) {
+        //  查询是否存在该分类
+        Category category = categoryMapper.selectOne(new LambdaQueryWrapper<Category>()
+                .select(Category::getId)
+                .eq(Category::getCategoryName, article.getCategoryName()));
+        if (Objects.isNull(category)) {
+            // 不存在则新建并插入
+            category = Category.builder().categoryName(article.getCategoryName()).build();
+            categoryMapper.insert(category);
+        }
+        return category.getId();
     }
 }
