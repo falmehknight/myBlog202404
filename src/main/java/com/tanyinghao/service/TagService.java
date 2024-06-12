@@ -4,9 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.tanyinghao.model.dto.ConditionDTO;
 import com.tanyinghao.model.dto.TagDTO;
 import com.tanyinghao.model.entity.Tag;
-import com.tanyinghao.model.vo.PageResult;
-import com.tanyinghao.model.vo.TagBackVO;
-import com.tanyinghao.model.vo.TagOptionVO;
+import com.tanyinghao.model.vo.*;
 
 import java.util.List;
 
@@ -58,4 +56,24 @@ public interface TagService extends IService<Tag> {
      * @return java.lang.Object
      **/
     List<TagOptionVO> listTagOption();
+
+    /**
+     *
+     * @Author TanYingHao
+     * @Description 查看标签列表
+     * @Date 23:41 2024/6/12
+     * @Param []
+     * @return java.util.List<com.tanyinghao.model.vo.TagVO>
+     **/
+    List<TagVO> listTagVO();
+
+    /**
+     *
+     * @Author TanYingHao
+     * @Description 查看标签下的文章
+     * @Date 23:43 2024/6/12
+     * @Param [condition]
+     * @return java.lang.Object
+     **/
+    ArticleConditionList listArticleTag(ConditionDTO condition);
 }

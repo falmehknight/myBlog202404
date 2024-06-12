@@ -4,15 +4,14 @@ import cn.hutool.core.lang.Assert;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.tanyinghao.comm.utils.PageUtils;
+import com.tanyinghao.mapper.ArticleMapper;
 import com.tanyinghao.mapper.ArticleTagMapper;
 import com.tanyinghao.mapper.TagMapper;
 import com.tanyinghao.model.dto.ConditionDTO;
 import com.tanyinghao.model.dto.TagDTO;
 import com.tanyinghao.model.entity.ArticleTag;
 import com.tanyinghao.model.entity.Tag;
-import com.tanyinghao.model.vo.PageResult;
-import com.tanyinghao.model.vo.TagBackVO;
-import com.tanyinghao.model.vo.TagOptionVO;
+import com.tanyinghao.model.vo.*;
 import com.tanyinghao.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,6 +35,9 @@ public class TagServiceImpl extends ServiceImpl<TagMapper, Tag> implements TagSe
 
     @Autowired
     private ArticleTagMapper articleTagMapper;
+
+    @Autowired
+    private ArticleMapper articleMapper;
 
     @Override
     public PageResult<TagBackVO> listTagBackVO(ConditionDTO condition) {
@@ -89,5 +91,22 @@ public class TagServiceImpl extends ServiceImpl<TagMapper, Tag> implements TagSe
     @Override
     public List<TagOptionVO> listTagOption() {
         return tagMapper.selectTagOptionList();
+    }
+
+    @Override
+    public List<TagVO> listTagVO() {
+        return tagMapper.selectTagVOList();
+    }
+
+    @Override
+    public ArticleConditionList listArticleTag(ConditionDTO condition) {
+        List<ArticleConditionVO> articleConditionVOList = articleMapper.listArticleByCondition(PageUtils.getLimit(),
+                PageUtils.getSize(), condition);
+        Tag tag = tagMapper.selectOne(new LambdaQueryWrapper<Tag>()
+                .select(Tag::getTagName).eq(Tag::getId, condition.getTagId()));
+        return ArticleConditionList.builder()
+                .articleConditionVOList(articleConditionVOList)
+                .name(tag.getTagName())
+                .build();
     }
 }

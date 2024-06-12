@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.tanyinghao.model.entity.Tag;
 import com.tanyinghao.model.vo.TagBackVO;
 import com.tanyinghao.model.vo.TagOptionVO;
+import com.tanyinghao.model.vo.TagVO;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
@@ -54,4 +55,16 @@ public interface TagMapper extends BaseMapper<Tag> {
      **/
     @Select("SELECT id, tag_name FROM t_tag")
     List<TagOptionVO> selectTagOptionList();
+
+    /**
+     *
+     * @Author TanYingHao
+     * @Description 查看标签VO集合
+     * @Date 23:45 2024/6/12
+     * @Param []
+     * @return java.util.List<com.tanyinghao.model.vo.TagVO>
+     **/
+    @Select("SELECT t.id, t.tag_name, COUNT(tat.tag_id) AS article_count FROM t_tag t LEFT JOIN t_article_tag tat " +
+            "on t.id = tat.tag_id GROUP BY t.id")
+    List<TagVO> selectTagVOList();
 }
