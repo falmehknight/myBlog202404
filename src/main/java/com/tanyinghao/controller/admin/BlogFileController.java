@@ -95,7 +95,7 @@ public class BlogFileController {
     @OptLogger(value = DELETE)
     @ApiOperation(value = "删除文件")
     @SaCheckPermission("system:file:delete")
-    @DeleteMapping("/admin/file/delete")
+    @DeleteMapping("/delete")
     public Result<?> deleteFile(@RequestBody List<Integer> fileIdList) {
         fileService.deleteFile(fileIdList);
         return Result.success();
