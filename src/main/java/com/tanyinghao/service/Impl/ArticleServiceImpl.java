@@ -13,6 +13,7 @@ import com.tanyinghao.model.vo.*;
 import com.tanyinghao.service.ArticleService;
 import com.tanyinghao.service.RedisService;
 import com.tanyinghao.service.TagService;
+import com.tanyinghao.strategy.context.SearchStrategyContext;
 import com.tanyinghao.strategy.context.UploadStrategyContext;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -67,6 +68,9 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
 
     @Autowired
     private BlogFileMapper blogFileMapper;
+
+    @Autowired
+    private SearchStrategyContext searchStrategyContext;
 
     @Override
     public PageResult<ArticleBackVO> listArticleBackVO(ConditionDTO condition) {
@@ -215,7 +219,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
 
     @Override
     public List<ArticleSearchVO> listArticlesBySearch(String keyword) {
-        return null;
+        return searchStrategyContext.executeSearchStrategy(keyword);
     }
 
     @Override
