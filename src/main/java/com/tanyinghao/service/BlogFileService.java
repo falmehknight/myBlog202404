@@ -48,4 +48,13 @@ public interface BlogFileService extends IService<BlogFile> {
      * @Param [fileIdList] 待删除文件的id集合
      **/
     void deleteFile(List<Integer> fileIdList);
+
+    /**
+     *
+     * @Author TanYingHao
+     * @Description 下载文件
+     * @Date 21:43 2024/6/12
+     * @Param [fileId] 文件id
+     **/
+    void downloadFile(Integer fileId);
 }

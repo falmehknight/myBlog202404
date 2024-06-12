@@ -15,15 +15,25 @@ import com.tanyinghao.model.vo.PageResult;
 import com.tanyinghao.service.BlogFileService;
 import com.tanyinghao.strategy.context.UploadStrategyContext;
 import io.swagger.annotations.Api;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Objects;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import static com.tanyinghao.comm.constant.CommConstant.FALSE;
 import static com.tanyinghao.comm.constant.CommConstant.TRUE;
@@ -45,6 +55,9 @@ public class BlogFileServiceImpl extends ServiceImpl<BlogFileMapper, BlogFile> i
 
     @Autowired
     private UploadStrategyContext uploadStrategyContext;
+
+    @Autowired
+    private HttpServletResponse response;
 
     @Override
     public PageResult<FileVO> listFileVOList(ConditionDTO condition) {
@@ -145,5 +158,91 @@ public class BlogFileServiceImpl extends ServiceImpl<BlogFileMapper, BlogFile> i
             }
         });
 
+    }
+
+    @Override
+    public void downloadFile(Integer fileId) {
+        // 查询文件信息
+        BlogFile blogFile = blogFileMapper.selectOne(new LambdaQueryWrapper<BlogFile>()
+                .select(BlogFile::getFilePath, BlogFile::getFileName,
+                        BlogFile::getExtendName, BlogFile::getIsDir)
+                .eq(BlogFile::getId, fileId));
+        Assert.notNull(blogFile, "文件不存在");
+        String filePath = localPath + blogFile.getFilePath() + "/";
+        // 不是目录
+        if (blogFile.getIsDir().equals(FALSE)) {
+            String fileName = blogFile.getFileName() + "." + blogFile.getExtendName();
+            downloadFile(filePath, fileName);
+        } else {
+            // 目录就压缩下载
+            String fileName = filePath + blogFile.getFileName();
+            File src = new File(fileName);
+            File dest = new File(fileName + ".zip");
+            try {
+                ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(dest));
+                // 压缩文件
+                toZip(src, zipOutputStream, src.getName());
+                zipOutputStream.close();
+                // 下载压缩包
+                downloadFile(filePath, blogFile.getFileName() + ".zip");
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                if (dest.exists()) {
+                    dest.delete();
+                }
+            }
+        }
+    }
+
+    /**
+     *
+     * @Author TanYingHao
+     * @Description 压缩文件
+     * @Date 21:53 2024/6/12
+     * @Param [src, zipOutputStream, name] 源文件, 压缩输出流, 文件名
+     **/
+    private void toZip(File src, ZipOutputStream zipOutputStream, String name) throws IOException {
+        for (File file : Objects.requireNonNull(src.listFiles())) {
+            if (file.isFile()) {
+                // 判断文件，变成ZipEntry对象，放入到压缩包中
+                ZipEntry zipEntry = new ZipEntry(name + "/" + file.getName());
+                // 读取文件中的数据，写到压缩包
+                zipOutputStream.putNextEntry(zipEntry);
+                FileInputStream fileInputStream = new FileInputStream(file);
+                int b;
+                while ((b = fileInputStream.read()) != -1) {
+                    zipOutputStream.write(b);
+                }
+                fileInputStream.close();
+                zipOutputStream.closeEntry();
+            } else {
+                toZip(file, zipOutputStream, name + "/" + file.getName());
+            }
+        }
+    }
+
+    /**
+     *
+     * @Author TanYingHao
+     * @Description 下载文件
+     * @Date 21:49 2024/6/12
+     * @Param [filePath, fileName] 文件路径 文件名
+     **/
+    private void downloadFile(String filePath, String fileName) {
+        FileInputStream fileInputStream = null;
+        ServletOutputStream outputStream = null;
+        try {
+            // 设置文件名
+            response.addHeader("Content-Disposition", "attachment;fileName=" + URLEncoder.encode(fileName, StandardCharsets.UTF_8));
+            fileInputStream = new FileInputStream(filePath + fileName);
+            outputStream = response.getOutputStream();
+            IOUtils.copyLarge(fileInputStream, outputStream);
+        } catch (IOException e) {
+            throw new ServiceException("文件下载失败");
+        } finally {
+            IOUtils.closeQuietly(fileInputStream);
+            IOUtils.closeQuietly(outputStream);
+        }
     }
 }
