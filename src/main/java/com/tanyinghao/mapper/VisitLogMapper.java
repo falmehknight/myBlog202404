@@ -1,9 +1,11 @@
 package com.tanyinghao.mapper;
 
+import cn.hutool.core.date.DateTime;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.tanyinghao.model.entity.VisitLog;
 
 
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -22,4 +24,14 @@ public interface VisitLogMapper extends BaseMapper<VisitLog> {
      * @return java.util.List<com.tanyinghao.model.entity.VisitLog> 访问日志列表
      **/
     List<VisitLog> selectVisitLogList(@Param("limit") Long limit, @Param("size") Long size, @Param("keyword") String keyword);
+
+    /**
+     *
+     * @Author TanYingHao
+     * @Description 删除一周前的访问日志
+     * @Date 23:46 2024/6/13
+     * @Param [endTime] 结束时间
+     **/
+    @Delete("DELETE FROM t_visit_log where create_time <= #{endTime}")
+    void deleteVisitLog(@Param("endTime") DateTime endTime);
 }
