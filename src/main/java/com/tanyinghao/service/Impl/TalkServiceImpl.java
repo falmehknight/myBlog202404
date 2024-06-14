@@ -18,6 +18,7 @@ import com.tanyinghao.model.entity.Talk;
 import com.tanyinghao.model.vo.PageResult;
 import com.tanyinghao.model.vo.TalkBackInfoVO;
 import com.tanyinghao.model.vo.TalkBackVO;
+import com.tanyinghao.model.vo.TalkVO;
 import com.tanyinghao.service.TalkService;
 import com.tanyinghao.strategy.context.UploadStrategyContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -127,5 +128,20 @@ public class TalkServiceImpl extends ServiceImpl<TalkMapper, Talk> implements Ta
             talkBackInfoVO.setImgList(CommUtils.castList(JSON.parseObject(talkBackInfoVO.getImages(), List.class), String.class));
         }
         return talkBackInfoVO;
+    }
+
+    @Override
+    public List<String> listTalkHome() {
+        return null;
+    }
+
+    @Override
+    public PageResult<TalkVO> listTalkVO() {
+        return null;
+    }
+
+    @Override
+    public TalkVO getTalkById(Integer talkId) {
+        return null;
     }
 }

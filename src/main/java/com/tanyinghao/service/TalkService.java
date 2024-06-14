@@ -7,7 +7,10 @@ import com.tanyinghao.model.entity.Talk;
 import com.tanyinghao.model.vo.PageResult;
 import com.tanyinghao.model.vo.TalkBackInfoVO;
 import com.tanyinghao.model.vo.TalkBackVO;
+import com.tanyinghao.model.vo.TalkVO;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 public interface TalkService extends IService<Talk> {
 
@@ -67,4 +70,34 @@ public interface TalkService extends IService<Talk> {
      * @return com.tanyinghao.model.vo.TalkBackInfoVO
      **/
     TalkBackInfoVO editTalk(Integer talkId);
+
+    /**
+     *
+     * @Author TanYingHao
+     * @Description 查看首页说说
+     * @Date 11:23 2024/6/14
+     * @Param []
+     * @return java.util.List<java.lang.String>
+     **/
+    List<String> listTalkHome();
+
+    /**
+     *
+     * @Author TanYingHao
+     * @Description 查看说说列表
+     * @Date 11:25 2024/6/14
+     * @Param []
+     * @return com.tanyinghao.model.vo.PageResult<com.tanyinghao.model.vo.TalkVO>
+     **/
+    PageResult<TalkVO> listTalkVO();
+
+    /**
+     *
+     * @Author TanYingHao
+     * @Description 根据id查询说说
+     * @Date 11:26 2024/6/14
+     * @Param [talkId]
+     * @return com.tanyinghao.model.vo.TalkVO
+     **/
+    TalkVO getTalkById(Integer talkId);
 }
