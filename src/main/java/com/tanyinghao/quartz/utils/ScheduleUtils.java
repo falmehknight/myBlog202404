@@ -113,7 +113,7 @@ public class ScheduleUtils {
      * @Param [taskId, taskGroup]
      * @return java.lang.String
      **/
-    private static JobKey getJobKey(Integer taskId, String taskGroup) {
+    public static JobKey getJobKey(Integer taskId, String taskGroup) {
         return JobKey.jobKey(ScheduleConstant.TASK_CLASS_NAME + taskId, taskGroup);
     }
 
