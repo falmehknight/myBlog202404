@@ -4,10 +4,10 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.tanyinghao.comm.utils.PageUtils;
 import com.tanyinghao.mapper.CommentMapper;
 import com.tanyinghao.model.dto.CheckDTO;
+import com.tanyinghao.model.dto.CommentDTO;
 import com.tanyinghao.model.dto.ConditionDTO;
 import com.tanyinghao.model.entity.Comment;
-import com.tanyinghao.model.vo.CommentBackVO;
-import com.tanyinghao.model.vo.PageResult;
+import com.tanyinghao.model.vo.*;
 import com.tanyinghao.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -47,5 +47,25 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
                 .stream()
                 .map(id -> Comment.builder().id(id).isCheck(check.getIsCheck()).build()).collect(Collectors.toList());
         this.updateBatchById(commentList);
+    }
+
+    @Override
+    public void addComment(CommentDTO comment) {
+
+    }
+
+    @Override
+    public List<RecentCommentVO> listRecentCommentVO() {
+        return null;
+    }
+
+    @Override
+    public PageResult<CommentVO> listCommentVO(ConditionDTO condition) {
+        return null;
+    }
+
+    @Override
+    public List<ReplyVO> listReply(Integer commentId) {
+        return null;
     }
 }
