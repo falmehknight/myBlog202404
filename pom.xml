@@ -182,6 +182,12 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-quartz</artifactId>
         </dependency>
+        <!-- 过滤敏感词 -->
+        <dependency>
+            <groupId>com.github.houbb</groupId>
+            <artifactId>sensitive-word</artifactId>
+            <version>${sensitive.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
