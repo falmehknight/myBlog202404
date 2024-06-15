@@ -11,6 +11,7 @@ import com.tanyinghao.model.vo.PhotoBackVO;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 public interface PhotoService extends IService<Photo> {
 
@@ -79,4 +80,14 @@ public interface PhotoService extends IService<Photo> {
      * @Param [photo]
      **/
     void movePhoto(PhotoDTO photo);
+
+    /**
+     *
+     * @Author TanYingHao
+     * @Description 查看照片列表
+     * @Date 14:34 2024/6/15
+     * @Param [condition]
+     * @return java.util.Map<java.lang.String,java.lang.Object>
+     **/
+    Map<String, Object> listPhotoVO(ConditionDTO condition);
 }

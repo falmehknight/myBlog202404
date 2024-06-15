@@ -12,11 +12,13 @@ import com.tanyinghao.mapper.PhotoMapper;
 import com.tanyinghao.model.dto.ConditionDTO;
 import com.tanyinghao.model.dto.PhotoDTO;
 import com.tanyinghao.model.dto.PhotoInfoDTO;
+import com.tanyinghao.model.entity.Album;
 import com.tanyinghao.model.entity.BlogFile;
 import com.tanyinghao.model.entity.Photo;
 import com.tanyinghao.model.vo.AlbumBackVO;
 import com.tanyinghao.model.vo.PageResult;
 import com.tanyinghao.model.vo.PhotoBackVO;
+import com.tanyinghao.model.vo.PhotoVO;
 import com.tanyinghao.service.PhotoService;
 import com.tanyinghao.strategy.context.UploadStrategyContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +26,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -141,5 +145,17 @@ public class PhotoServiceImpl extends ServiceImpl<PhotoMapper, Photo> implements
                         .build())
                 .collect(Collectors.toList());
         this.updateBatchById(photoList);
+    }
+
+    @Override
+    public Map<String, Object> listPhotoVO(ConditionDTO condition) {
+        Map<String, Object> result = new HashMap<>(2);
+        String albumName = albumMapper.selectOne(new LambdaQueryWrapper<Album>()
+                        .select(Album::getAlbumName).eq(Album::getId, condition.getAlbumId()))
+                .getAlbumName();
+        List<PhotoVO> photoVOList = photoMapper.selectPhotoVOList(condition.getAlbumId());
+        result.put("albumName", albumName);
+        result.put("photoVOList", photoVOList);
+        return result;
     }
 }
