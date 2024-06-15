@@ -33,7 +33,6 @@ public class MessageController {
     @Autowired
     private MessageService messageService;
 
-
     /**
      *
      * @Author TanYingHao
