@@ -5,8 +5,11 @@ import com.tanyinghao.model.dto.AlbumDTO;
 import com.tanyinghao.model.dto.ConditionDTO;
 import com.tanyinghao.model.entity.Album;
 import com.tanyinghao.model.vo.AlbumBackVO;
+import com.tanyinghao.model.vo.AlbumVO;
 import com.tanyinghao.model.vo.PageResult;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 public interface AlbumService extends IService<Album> {
 
@@ -66,4 +69,14 @@ public interface AlbumService extends IService<Album> {
      * @return com.tanyinghao.model.dto.AlbumDTO
      **/
     AlbumDTO editAlbum(Integer albumId);
+
+    /**
+     *
+     * @Author TanYingHao
+     * @Description 查看相册VO
+     * @Date 15:03 2024/6/15
+     * @Param []
+     * @return java.util.List<com.tanyinghao.model.vo.AlbumVO>
+     **/
+    List<AlbumVO> listAlbumVO();
 }
