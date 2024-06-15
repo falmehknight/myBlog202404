@@ -1,14 +1,20 @@
 package com.tanyinghao.controller.user;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
+import cn.dev33.satoken.annotation.SaCheckPermission;
+import com.tanyinghao.comm.annotation.AccessLimit;
 import com.tanyinghao.comm.annotation.VisitLogger;
+import com.tanyinghao.comm.enums.LikeTypeEnum;
 import com.tanyinghao.comm.result.Result;
 import com.tanyinghao.model.vo.*;
 import com.tanyinghao.service.ArticleService;
+import com.tanyinghao.strategy.context.LikeStrategyContext;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -26,6 +32,28 @@ public class ArticleController {
 
     @Autowired
     private ArticleService articleService;
+
+    @Autowired
+    private LikeStrategyContext likeStrategyContext;
+
+
+    /**
+     *
+     * @Author TanYingHao
+     * @Description 点赞文章
+     * @Date 18:09 2024/6/15
+     * @Param [articleId]
+     * @return com.tanyinghao.comm.result.Result<?>
+     **/
+    @SaCheckLogin
+    @ApiOperation(value = "点赞文章")
+    @AccessLimit(seconds = 60, maxCount = 3)
+    @SaCheckPermission("blog:article:like")
+    @PostMapping("/article/{articleId}/like")
+    public Result<?> likeArticle(@PathVariable("articleId") Integer articleId) {
+        likeStrategyContext.executeLikeStrategy(LikeTypeEnum.ARTICLE, articleId);
+        return Result.success();
+    }
 
     /**
      *
