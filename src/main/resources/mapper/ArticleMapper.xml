@@ -179,5 +179,12 @@
         ORDER BY a.id DESC
         LIMIT #{limit}, #{size}
     </select>
+    <select id="selectArticleStatistics" resultType="com.tanyinghao.model.vo.ArticleStatisticsVO">
+        SELECT DATE_FORMAT(create_time, "%Y-%m-%d") AS date,
+               COUNT(*)                             AS count
+        FROM t_article
+        GROUP BY date
+        ORDER BY date DESC
+    </select>
 
 </mapper>

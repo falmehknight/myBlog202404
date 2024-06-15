@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.tanyinghao.model.entity.VisitLog;
 
 
+import com.tanyinghao.model.vo.UserViewVO;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -34,4 +35,14 @@ public interface VisitLogMapper extends BaseMapper<VisitLog> {
      **/
     @Delete("DELETE FROM t_visit_log where create_time <= #{endTime}")
     void deleteVisitLog(@Param("endTime") DateTime endTime);
+
+    /**
+     *
+     * @Author TanYingHao
+     * @Description 查看在指定时间间隔类的用户浏览
+     * @Date 18:50 2024/6/15
+     * @Param [startTime, endTime]
+     * @return java.util.List<com.tanyinghao.model.vo.UserViewVO>
+     **/
+    List<UserViewVO> selectUserViewList(@Param("startTime") DateTime startTime, @Param("endTime") DateTime endTime);
 }

@@ -132,4 +132,14 @@ public interface ArticleMapper extends BaseMapper<Article> {
      * @return java.util.List<com.tanyinghao.model.vo.ArticleConditionVO>
      **/
     List<ArticleConditionVO> listArticleByCondition(@Param("limit") Long limit, @Param("size") Long size, @Param("condition") ConditionDTO condition);
+
+    /**
+     *
+     * @Author TanYingHao
+     * @Description 查询文章统计
+     * @Date 18:52 2024/6/15
+     * @Param []
+     * @return java.util.List<com.tanyinghao.model.vo.ArticleStatisticsVO>
+     **/
+    List<ArticleStatisticsVO> selectArticleStatistics();
 }
