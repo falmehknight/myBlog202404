@@ -30,7 +30,7 @@ import java.util.List;
  * @Version 1.0
  **/
 @Api(tags = "前台说说模块")
-@RestController
+@RestController("userTalkController")
 public class TalkController {
 
     @Autowired

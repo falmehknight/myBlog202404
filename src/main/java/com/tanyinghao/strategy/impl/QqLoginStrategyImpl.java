@@ -11,11 +11,9 @@ import com.tanyinghao.model.vo.SocialTokenVO;
 import com.tanyinghao.model.vo.SocialUserInfoVO;
 import com.tanyinghao.model.vo.TokenVO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -36,7 +34,7 @@ public class QqLoginStrategyImpl extends AbstractLoginStrategyImpl{
     @Autowired
     private QqProperties qqProperties;
 
-    @Resource
+    @Autowired
     private RestTemplate restTemplate;
 
     @Override

@@ -23,7 +23,7 @@ import java.util.List;
  * @Version 1.0
  **/
 @Api(tags = "前台标签模块")
-@RestController
+@RestController("userTagController")
 @RequestMapping("/tag")
 public class TagController {
     @Autowired

@@ -23,7 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
  * @Date 2024/6/10 22:19
  * @Version 1.0
  **/
-@RestController
+@RestController()
 @Api("用户信息模块")
 @RequestMapping("/user")
 public class UserInfoController {

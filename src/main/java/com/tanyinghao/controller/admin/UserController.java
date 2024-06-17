@@ -137,7 +137,7 @@ public class UserController {
      **/
     @ApiOperation("查看在线用户")
     @SaCheckPermission("monitor:online:list")
-    @GetMapping("/user/list")
+    @GetMapping("/online/list")
     public Result<PageResult<OnlineVO>> listOnlineUser(ConditionDTO condition) {
         return Result.success(userService.listOnlineUser(condition));
     }

@@ -59,8 +59,15 @@ public class Knife4jConfig {
     /**
      * 联系人
      */
+    @Value("${swagger.name}")
+    private String name;
+
     @Value("${swagger.contact}")
-    private Contact contact;
+    private String url;
+
+    @Value("${swagger.email}")
+    private String email;
+
 
     public Docket createRestApi() {
         return new Docket(DocumentationType.SWAGGER_2)
@@ -78,7 +85,7 @@ public class Knife4jConfig {
                 .title(title)
                 .description(description)
                 .termsOfServiceUrl(termsOfServiceUrl)
-                .contact(contact)
+                .contact(new Contact(name, url, email))
                 .version(version)
                 .build();
     }

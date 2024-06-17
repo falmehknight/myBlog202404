@@ -29,7 +29,7 @@ import java.util.List;
  * @Version 1.0
  **/
 @Api(tags = "前台评论模块")
-@RestController
+@RestController("userCommentController")
 public class CommentController {
 
     @Autowired

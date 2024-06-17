@@ -37,7 +37,7 @@ public class GithubLoginStrategyImpl extends AbstractLoginStrategyImpl{
     @Autowired
     private GithubProperties githubProperties;
 
-    @Resource
+    @Autowired
     private RestTemplate restTemplate;
 
     @Override

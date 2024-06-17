@@ -22,7 +22,7 @@ import java.util.List;
  * @Version 1.0
  **/
 @Api(tags = "前台留言模块")
-@RestController
+@RestController("userMessageController")
 @RequestMapping("/message")
 public class MessageController {
 

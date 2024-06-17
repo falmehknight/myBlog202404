@@ -20,7 +20,7 @@ import java.util.Map;
  * @Version 1.0
  **/
 @Api(tags = "前台照片模块")
-@RestController
+@RestController("userPhotoController")
 public class PhotoController {
     @Autowired
     private PhotoService photoService;

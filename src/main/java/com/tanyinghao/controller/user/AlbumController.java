@@ -20,7 +20,7 @@ import java.util.List;
  * @Version 1.0
  **/
 @Api(tags = "前台相册管理模块")
-@RestController
+@RestController("userAlbumController")
 public class AlbumController {
     @Autowired
     private AlbumService albumService;

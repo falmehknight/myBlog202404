@@ -26,7 +26,7 @@ import java.util.List;
  * @Date 2024/6/12 16:08
  * @Version 1.0
  **/
-@RestController
+@RestController("userArticleController")
 @Api(tags = "前台文章模块")
 public class ArticleController {
 

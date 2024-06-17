@@ -23,7 +23,7 @@ import java.util.List;
  * @Version 1.0
  **/
 @Api(tags = "前台分类管理模块")
-@RestController
+@RestController("userCategoryController")
 @RequestMapping("/category")
 public class CategoryController {
 

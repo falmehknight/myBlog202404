@@ -14,6 +14,7 @@ import com.tanyinghao.service.BlogInfoService;
 import com.tanyinghao.service.RedisService;
 import com.tanyinghao.service.SiteConfigService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -31,6 +32,7 @@ import static com.tanyinghao.comm.enums.ArticleStatusEnum.PUBLIC;
  * @Date 2024/6/15 18:32
  * @Version 1.0
  **/
+@Service
 public class BlogInfoServiceImpl implements BlogInfoService {
 
     @Autowired

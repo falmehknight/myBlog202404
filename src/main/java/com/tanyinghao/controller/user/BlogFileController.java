@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @Version 1.0
  **/
 @Api(tags = "前台文件模块")
-@RestController
+@RestController("userBlogFileController")
 public class BlogFileController {
     @Autowired
     private BlogFileService blogFileService;

@@ -20,7 +20,7 @@ import java.util.List;
  * @Version 1.0
  **/
 @Api(tags = "前台友链模块")
-@RestController
+@RestController("userFriendController")
 public class FriendController {
 
     @Autowired

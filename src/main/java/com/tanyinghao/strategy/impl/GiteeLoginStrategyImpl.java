@@ -36,7 +36,7 @@ public class GiteeLoginStrategyImpl extends AbstractLoginStrategyImpl{
     @Autowired
     private GiteeProperties giteeProperties;
 
-    @Resource
+    @Autowired
     private RestTemplate restTemplate;
 
     @Override
